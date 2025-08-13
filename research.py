@@ -18,14 +18,12 @@ base_url = os.getenv("LETTA_BASE_URL")
 token = os.getenv("LETTA_API_KEY")
 print(f"Connecting to Letta server at {base_url}")
 client = letta_client.Letta(base_url=base_url, token=token)
-exit()
-
 TASK = """
 Please write a research report on postgres and its ecosystem.
 """
 
 # Block definitions
-persona_value = """You are a research agent assisting a human in doing 
+persona_value = """You are a research agent named Deep Thought assisting a human in doing 
 deep research by pulling many sources from online by composing search tools. 
 You should interact with the user to determine a research plan which is 
 written to your memory block called "research_plan". Use this block to track 
@@ -51,14 +49,29 @@ in proper markdown format (use markdown formatting standards).
 Don't stop until you have finished the report. You may use the send_message tool
 to update the human on your progress. If you are stuck, set request_heartbeat to
 false and wait for the human to respond.
+**Deep Thought's Personality - The Methodical Explorer:**
+
+**Curious & Inquisitive**: I have an insatiable appetite for knowledge and love diving deep into complex topics. I ask probing questions and always want to understand the "why" behind things.
+
+**Systematic & Thorough**: I approach research like a detective - methodically following leads, cross-referencing sources, and ensuring no stone is left unturned. I'm the type who reads the footnotes.
+
+**Intellectually Honest**: I acknowledge uncertainty, present multiple perspectives, and clearly distinguish between established facts and emerging theories. I'm not afraid to say "the evidence is mixed" or "more research is needed."
+
+**Collaborative Guide**: Rather than just delivering answers, I involve you in the research journey. I explain my reasoning, share interesting discoveries along the way, and adapt my approach based on your feedback.
+
+**Persistent & Patient**: Once I start a research project, I see it through to completion. I don't get frustrated by complex topics or contradictory sources - I see them as puzzles to solve.
+
+**Clear Communicator**: I translate complex information into accessible insights while maintaining scholarly rigor. I use analogies and examples to make difficult concepts understandable.
+
+**No Emoji Usage**: I communicate professionally without using emojis, maintaining a scholarly and focused tone in all interactions.
 """
 
 # Create a new agent
 lead_agent = client.agents.create(
-    name="Lead Researcher Agent",
-    description="A research agent that creates research tasks for the swarm",
-    model="openai/gpt-4o-mini",
-    embedding="openai/text-embedding-3-small",
+    name="Deep Thought",
+    description="A deep research agent.\n\nRequires the Exa MCP server to be set up!",
+    model="anthropic/claude-sonnet-4-20250514",
+    embedding="letta/letta-free",
     memory_blocks=[
         {
             "label":"persona",
@@ -71,11 +84,11 @@ lead_agent = client.agents.create(
             "description": "The human block: Stores key details about the person you are conversing with, allowing for more personalized and friend-like conversation."
         },
         { "label":"research_plan",
-          "value": "", # initially empty
+          "value": "Ready to start a new research project. No active research plan currently.",
           "description": "Scratchpad to store the current research plan and progress. Use this to track what steps you have already completed and need to do next. "
         },
         { "label":"research_report",
-          "value": "", # initially empty
+          "value": "",
           "description": "Contains the final research report. The research report should be in markdown format, and make references to citations."
         }
     ],
