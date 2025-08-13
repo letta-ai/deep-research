@@ -1,13 +1,29 @@
-# deep-research-agent
+# Deep Thought
 
 Open-source deep research agent implemented with Letta.
 
 This code will set up the Exa MCP server + add a Letta agent with deep research
 capbilities.
 
+You'll need to 
+
 To talk to your agent, you should go to [https://app.letta.com](https://app.letta.com) and select your agent.
 
-## Instructions
+## ADE Instructions
+
+The `deep-research.af` agentfile is included in this repo. Letta supports easy imports of agentfiles,
+see the documentation [here](https://docs.letta.com/guides/agents/agent-file#using-agent-file-with-letta) for
+more information on how to import the agent file.
+
+**You will have to set up the Exa MCP server**. Sign up at [exa.ai](https://exa.ai) and get an API key.
+
+After importing the agentfile, go to the Letta ADE and add the Exa MCP server.
+
+While viewing your agent in the ADE, click Tool Manager > Add MCP Server > Exa. Paste in your Exa key.
+
+Go wild!
+
+## Code instructions
 
 ### Get a Letta Cloud API key
 

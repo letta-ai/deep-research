@@ -104,6 +104,10 @@ lead_agent = client.agents.create(
     tool_ids=exa_tool_ids  # Add Exa MCP tool IDs
 )
 
+# Print the agent ID
+print(f"Created agent with ID {lead_agent.id}")
+print(f"Visit https://app.letta.com/agents/{lead_agent.id}")
+
 # Ask the agent to create a research plan
 response = client.agents.messages.create_stream(
     agent_id = lead_agent.id,

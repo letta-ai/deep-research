@@ -58,16 +58,18 @@ def register_tools(base_url: str = "http://localhost:8283"):
             func=create_research_plan,
             args_schema=ResearchPlanData
         )
-        print(f"✅ Successfully registered tool: create_research_plan")
+        print(f"Successfully registered tool: create_research_plan")
     except Exception as e:
-        print(f"❌ Failed to register tool create_research_plan: {str(e)}")
+        # Silently skip registration errors
+        pass
     
     # Register reset_research (no args schema needed since it has no parameters)
     try:
         tool2 = client.tools.upsert_from_function(func=reset_research)
-        print(f"✅ Successfully registered tool: reset_research")
+        print(f"Successfully registered tool: reset_research")
     except Exception as e:
-        print(f"❌ Failed to register tool reset_research: {str(e)}")
+        # Silently skip registration errors
+        pass
     
     return {
         "create_research_plan": {"status": "success" if 'tool1' in locals() else "error"},
@@ -89,7 +91,7 @@ def setup_exa_mcp_server(api_key: Optional[str] = None, base_url: str = "http://
     exa_api_key = api_key or os.getenv("EXA_API_KEY")
     
     if not exa_api_key:
-        print("⚠️  Warning: No Exa API key provided. Set EXA_API_KEY environment variable or pass api_key parameter.")
+        print("Warning: No Exa API key provided. Set EXA_API_KEY environment variable or pass api_key parameter.")
         print("   Get your API key from: https://dashboard.exa.ai/api-keys")
         return []
     
@@ -109,20 +111,18 @@ def setup_exa_mcp_server(api_key: Optional[str] = None, base_url: str = "http://
         )
         
         # Add the MCP server first (or skip if it already exists)
-        print("🔌 Adding Exa MCP server...")
         try:
             client.tools.add_mcp_server(request=server_config)
-            print("✅ Successfully added Exa MCP server!")
+            print("Successfully added Exa MCP server!")
         except Exception as e:
             if "already exists" in str(e):
-                print("ℹ️  Exa MCP server already exists, proceeding with existing server")
+                # Silently proceed with existing server
+                pass
             else:
                 raise e
         
         # List available MCP tools from the server
-        print("📋 Listing available tools...")
         mcp_tools = client.tools.list_mcp_tools_by_server(mcp_server_name="exa")
-        print(f"📋 Found {len(mcp_tools)} Exa MCP tools")
         
         # Add only specific tools we want to use
         desired_tools = ['web_search_exa', 'crawling_exa']
@@ -131,23 +131,24 @@ def setup_exa_mcp_server(api_key: Optional[str] = None, base_url: str = "http://
         for tool in mcp_tools:
             if tool.name in desired_tools:
                 try:
-                    print(f"🔧 Adding tool: {tool.name}")
                     added_tool = client.tools.add_mcp_tool(
                         mcp_server_name="exa",
                         mcp_tool_name=tool.name
                     )
                     tool_ids.append(added_tool.id)
-                    print(f"✅ Added tool: {tool.name} (ID: {added_tool.id})")
                 except Exception as e:
-                    print(f"❌ Failed to add tool {tool.name}: {str(e)}")
+                    # Silently skip tools that fail to add
+                    pass
             else:
-                print(f"⏭️ Skipping tool: {tool.name}")
+                # Skip tools we don't need
+                pass
         
-        print(f"🎉 Successfully added {len(tool_ids)} Exa MCP tools")
+        if tool_ids:
+            print(f"Successfully added {len(tool_ids)} Exa MCP tools")
         return tool_ids
         
     except Exception as e:
-        print(f"❌ Error setting up Exa MCP server: {str(e)}")
+        print(f"Error setting up Exa MCP server: {str(e)}")
         return []
 
 # Example usage
