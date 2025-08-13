@@ -14,8 +14,11 @@ register_tools()
 exa_tool_ids = setup_exa_mcp_server()
 
 # Initialize the Letta client
-base_url = os.getenv("LETTA_BASE_URL", "http://localhost:8283")
-client = letta_client.Letta(base_url=base_url)
+base_url = os.getenv("LETTA_BASE_URL")
+token = os.getenv("LETTA_API_KEY")
+print(f"Connecting to Letta server at {base_url}")
+client = letta_client.Letta(base_url=base_url, token=token)
+exit()
 
 TASK = """
 Please write a research report on postgres and its ecosystem.
@@ -108,7 +111,7 @@ for chunk in response:
             print(chunk.reasoning)
         elif chunk.message_type == "tool_call_message":
             print("Calling tool: ", chunk.tool_call.name)
-            print(json.dumps(chunk.tool_call.args, indent=2))
+            print(json.dumps(chunk.tool_call.arguments, indent=2))
         elif chunk.message_type == "assistant_message":
             print(chunk.content)
 
